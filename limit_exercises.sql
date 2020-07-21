@@ -18,7 +18,7 @@ where hire_date between '1990-01-01' and '1999-12-31'
     order by birth_date asc, hire_date desc
     limit 5;
 
--- 5. Try to think of your results as batches, sets, or pages. 
+-- 4. Try to think of your results as batches, sets, or pages. 
 -- The first five results are your first page. 
 -- The five after that would be your second page, etc. 
 -- Update the query to find the tenth page of results.
@@ -30,4 +30,6 @@ where hire_date between '1990-01-01' and '1999-12-31'
     limit 5 offset 45;
 
 
-
+-- relationship between LIMIT and OFFSET
+-- formula: LIMIT = LIMIT
+-- formula: OFFSET = (LIMIT * page number) - LIMIT
