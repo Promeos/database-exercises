@@ -32,6 +32,18 @@ from employees
 where last_name like 'E%'
 order by emp_no;
 
+select *
+from employees
+where last_name like 'E%'
+    or last_name like '%E'
+    order by emp_no;
+
+select *
+from employees
+where last_name like 'E%'
+    and last_name like '%E'
+    group by emp_no;
+
 -- 6. reverse the sort order for both queries (1-4, 5)
 select *
 from employees
@@ -42,6 +54,18 @@ select *
 from employees
 where last_name like 'E%'
 order by emp_no desc;
+
+select *
+from employees
+where last_name like 'E%'
+    or last_name like '%E'
+    order by emp_no desc;
+
+select *
+from employees
+where last_name like 'E%'
+    and last_name like '%E'
+    group by emp_no desc;
 
 -- 7. find all employees hired in the 90s and born on Christmas
 -- [UPDATE] sort by hire_date in descending order
