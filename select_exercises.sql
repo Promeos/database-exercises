@@ -11,7 +11,7 @@ from albums;
 # 4.1 the name of all albums by Pink Floyd
 select albums as 'album_name'
 from albums
-where artist like 'Pink Floyd';
+where artist = 'Pink Floyd';
 
 # 4.1 alternative where statement. not a best practice on a larger dataset.
 # not explicit enough without documentation or renaming queried data.
@@ -56,9 +56,15 @@ select name as 'album_name', genre
 from albums
 where genre = 'Rock'; 
 
-# this is not correct. there are more songs with the genre 'Rock'!
-# let''s do some sherlock holmesin''. it''s in the schema!
-# TIL: collation and case-sensitve/case-insensitive
+# 4.6 select all the albums with a genre of rock - all genres with any variation of rock
+# updated with corrections from sql review 7/21/2020
+select albums as 'album_name', genre
+from albums
+where genre like "%rock%";
+
+# 4.6 searching for the literal string 'Rock' within the string of genre 
+# there are more songs with the genre 'Rock'! let''s do some sherlock holmesin''.
+# it''s in the schema! TIL: collation and case-sensitve/case-insensitive
 select collation_name
 from information_schema.columns
 where table_name = 'albums'; # there you are, latin1_swedish_ci, you case-insensitive schema you
