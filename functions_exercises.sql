@@ -70,11 +70,10 @@ WHERE last_name LIKE 'E%'
 -- find all employees hired in the 90s and born on Christmas, sort by hire_date in descending order
 -- 4. For your query of employees born on Christmas and hired in the 90s
 -- USE datediff() to find how many days they have been working at the company (Hint: You will also need to USE NOW() or CURDATE())
-SELECT DATEDIFF(CURDATE(), hire_date) AS length_of_employement
+SELECT *, DATEDIFF(CURDATE(), hire_date) AS length_of_employement
 FROM employees
 WHERE hire_date BETWEEN '1990-01-01' AND '1999-12-31'
     AND birth_date LIKE '%-12-25'
-    ORDER BY birth_date ASC, hire_date DESC;
 
 -- 5. find the smallest and largest salary FROM the salaries table.
 SELECT MIN(salary) AS smallest_salary, MAX(salary) AS largest_salary
