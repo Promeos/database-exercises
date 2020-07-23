@@ -16,10 +16,9 @@ FROM titles;
 
 
 -- Find your query for employees whose last names start and end with 'E'. Update the query find just the unique last names that start and end with 'E' using GROUP BY. The results should be:
-SELECT DISTINCT last_name
+SELECT last_name
 FROM employees
-WHERE last_name LIKE 'E%'
-    AND last_name LIKE '%E'
+WHERE last_name LIKE 'E%E'
 GROUP BY last_name;
 
 -- Eldridge
@@ -31,17 +30,13 @@ GROUP BY last_name;
 -- Update your previous query to now find unique combinations of first and last name where the last name starts and ends with 'E'. You should get 846 rows.
 SELECT first_name, last_name
 FROM employees
-WHERE last_name LIKE 'E%'
-    AND last_name LIKE '%E'
+WHERE last_name LIKE 'E%E'
 GROUP BY first_name, last_name;
 
-
-
 -- Find the unique last names with a 'q' but not 'qu'. Your results should be:
-SELECT DISTINCT last_name
+SELECT last_name
 FROM employees
-WHERE last_name LIKE '%q%'
-    AND NOT LIKE '%qu%'
+WHERE last_name LIKE '%q%' AND last_name NOT LIKE '%qu%'
 GROUP BY last_name;
 
 -- Chleq
@@ -86,15 +81,15 @@ ORDER BY duplicate_usernames DESC;
 -- I'll come back to it before class. 
 
 -- this is the new query summing all duplicate values
-select SUM(duplicates.items) as duplicate_username_total
-from
-(select concat(lower(substr(first_name, 1, 1)),
-              lower(substr(last_name, 1, 4)) 
-            ,'_'
-            ,substr(birth_date, 6, 2)
-            ,substr(birth_date, 3, 2)) 
-            AS username
-            ,count(*) as items
-from employees
-group by username
-having count(username) > 1) as duplicates;
+SELECT SUM(duplicates.items) AS duplicate_username_total
+FROM
+(SELECT LOWER(CONCAT(substr(first_name, 1, 1),
+            substr(last_name, 1, 4),
+            '_',
+            SUBSTR(birth_date, 6, 2),
+            SUBSTR(birth_date, 3, 2))) 
+            AS username,
+            COUNT(*) AS items
+FROM employees
+GROUP BY username
+HAVING COUNT(username) > 1) AS duplicates;
