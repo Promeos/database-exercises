@@ -40,7 +40,7 @@ SELECT CONCAT(first_name, ' ', last_name) AS full_name
 FROM employees
 WHERE last_name LIKE 'E%'
     AND last_name LIKE '%E'
-    group by emp_no;
+    ORDER BY emp_no;
 
 -- reverse the sort order for both queries (1-4, 5)
 SELECT *
@@ -82,10 +82,26 @@ FROM salaries;
 -- 6. USE your knowledge of built in SQL functions to generate a username for all of the employees. A username should be all lowercase, 
 -- and consist of the first character of the employees first name, the first 4 characters of the employees last name, an underscore, 
 -- the month the employee was born, and the last two digits of the year that they were born. Below is an example of what the first 10 rows will look like:
-SELECT CONCAT(LOWER(SUBSTR(first_name, 1, 1)), LOWER(SUBSTR(last_name, 1, 4)) 
-            ,'_', SUBSTR(birth_date, 6, 2), SUBSTR(birth_date, 3, 2)) AS username 
+SELECT CONCAT(LOWER(SUBSTR(first_name, 1, 1)),
+              LOWER(SUBSTR(last_name, 1, 4)) 
+            ,'_'
+            ,SUBSTR(birth_date, 6, 2)
+            ,SUBSTR(birth_date, 3, 2)) 
+            AS username 
             ,first_name 
             ,last_name
             ,birth_date
 FROM employees;
 
+SELECT LOWER(
+        CONCAT(
+            SUBSTR(first_name, 1, 1)
+            ,SUBSTR(last_name, 1, 4)
+            ,SUBSTR(MONTH(birth_date), 1, 2)
+            ,SUBSTR(YEAR(birth_date), -2, 2)
+        )
+    ) AS username
+    ,first_name
+    ,last_name
+    ,birth_day
+FROM employees;
