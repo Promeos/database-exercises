@@ -85,10 +85,8 @@ ORDER BY duplicate_usernames DESC;
 -- I've spammed the server log with 50+ attempts. 
 -- I'll come back to it before class. 
 
--- this is the closest I've gotten. it's incorrect.
--- the query sums individual rows of duplicate observations per username.
--- the query fails to sum the grouped duplicate username value as a SUM.
-select count(*) as duplicate_username_total
+-- this is the new query summing all duplicate values
+select SUM(duplicates.items) as duplicate_username_total
 from
 (select concat(lower(substr(first_name, 1, 1)),
               lower(substr(last_name, 1, 4)) 
@@ -96,6 +94,7 @@ from
             ,substr(birth_date, 6, 2)
             ,substr(birth_date, 3, 2)) 
             AS username
+            ,count(*) as items
 from employees
 group by username
 having count(username) > 1) as duplicates;
