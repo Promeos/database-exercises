@@ -81,7 +81,7 @@ ORDER BY duplicate_usernames DESC;
 -- I'll come back to it before class. 
 
 -- this is the new query summing all duplicate values
-SELECT SUM(duplicates.items) AS duplicate_username_total
+SELECT SUM(duplicates.items) AS duplicate_username_total, COUNT(duplicates.items) as total_distinct_duplicate_usernames
 FROM
 (SELECT LOWER(CONCAT(substr(first_name, 1, 1),
             substr(last_name, 1, 4),
