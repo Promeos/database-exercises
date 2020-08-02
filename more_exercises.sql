@@ -26,3 +26,43 @@ select ms.dept_name, ms.manager_name, ms.salary, ((ms.salary - ds.average_dept_s
 from manager_salary as ms
 join department_salary_data as ds using(dept_no)
 where ms.salary < ds.average_dept_salary;
+
+-- What languages are spoken in Santa Monica?
+use world;
+
+select Language, Percentage
+from countrylanguage
+join city using(CountryCode)
+where name = 'Santa Monica'
+order by percentage, language desc;
+
+-- How many different countries are in each region?
+select region as Region, count(region) as num_countries
+from country
+group by region
+order by num_countries;
+
+-- What is the population for each region?
+select region as Region, sum(population) as population
+from country
+group by region
+order by population desc;
+
+-- What is the population for each continent?
+select Continent, sum(population) as population
+from country
+group by Continent
+order by population desc;
+
+-- What is the average life expectancy globally?
+select avg(LifeExpectancy)
+from country;
+
+-- What is the average life expectancy for each region, each continent? Sort the results from shortest to longest
+select Continent, avg(LifeExpectancy) as life_expectancy
+from country
+group by Continent
+order by life_expectancy, Continent;
+
+
+
