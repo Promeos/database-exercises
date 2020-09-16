@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Database Exercises
 This repository contains [SQL](https://www.mysql.com/) queries using MySQL sample databases.
 
