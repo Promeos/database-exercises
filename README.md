@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Database Exercises
 This repository contains [SQL](https://www.mysql.com/) queries using MySQL sample databases.
 
@@ -38,4 +39,3 @@ _In progress_
 * [ ] Include queries that ask questions IRL teams will ask
 
 [ ] Add contact, usage/cloning/installation? (SQLPro GUI), and code sample sections 
-
