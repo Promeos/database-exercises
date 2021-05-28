@@ -112,7 +112,6 @@ ADD CONSTRAINT id_pk PRIMARY KEY (id);
 SELECT * FROM cars;
 
 
-
 -- 6. Create a table with constraints from scratch
 -- Let's think of an entity type "student". A student has:
 
