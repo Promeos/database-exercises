@@ -18,7 +18,7 @@ select *
 from albums
 where release_date between 1990 and 1999;
 
-select name, release_date, sales as certified_sales;
+select name, release_date, sales as certified_sales
 from albums
 where sales < 20;
 
