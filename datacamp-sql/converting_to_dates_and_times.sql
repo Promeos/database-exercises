@@ -1,4 +1,4 @@
--- Chapter 2.
+-- Chapter 2. Converting to Dates and Times
 -- Converting strings and other inputs to date and time data types.
 
 ---------------------------------- NOTES -----------------------------------------
