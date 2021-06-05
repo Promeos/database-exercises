@@ -145,6 +145,9 @@ PERFORMING ARITHMETIC OPERATIONS ON DATES
 $ Types of operations with dates
 - Opeartions using arithmetic operators (+,-) on two dates or between a date and an number (interval).
 - Modify the value of a date - DATEADD()
+
+
+
 */
 ------------------------------ EXERCISES -----------------------------------------
 
