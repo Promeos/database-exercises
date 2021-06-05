@@ -146,6 +146,64 @@ $ Types of operations with dates
 - Opeartions using arithmetic operators (+,-) on two dates or between a date and an number (interval).
 - Modify the value of a date - DATEADD()
 
+DECLARE @date1 datetime = '2019-01-01';
+DECLARE @date2 datetime = '2020-01-01';
+
+SELECT
+    @date2 + 1 AS add_one,
+    @date2 - 1 AS subtract_one,
+    @date2 + @date1 AS add_dates,
+    @date2 - @date1 AS subtract_date;
+
+$ DATEADD(datepart, number, date)
+- Add a date part to a date and the result will be a new date.
+
+SELECT
+    first_name,
+    birthdate,
+    DATEADD(YEAR, 5, birthdate) AS fifth_birthday,
+    DATEADD(YEAR, -5, birthdate) AS subtract_5years,
+    DATEADD(DAY, 30, birthdate) AS add_30days,
+    DATEADD(DAY, -30, birthdate) AS subtract_30days
+FROM voters;
+
+$ DATEDIFF(datepart, startdate, enddate)
+- Find the difference in time unites between two dates.
+- Difference granularity from years to a nanosecond.
+
+SELECT
+    first_name,
+    birthdate,
+    first_vote_date,
+    DATEDIFF(YEAR, birthdate, first_vote_date) AS age_years,
+    DATEDIFF(QUARTER, birthdate, first_vote_date) AS age_quarters,
+    DATEDIFF(DAY, birthdate, first_vote_date) AS age_days,
+    DATEDIFF(HOUR, birthdate, first_vote_date) AS age_hours
+FROM voters;
+
+
+VALIDATING IF AN EXPRESSION IS A DATE
+
+$ ISDATE(expression)
+- Determines whether an expression is a valid date data type
+
+| ISDATE() expression  | Return type |
+| -------------------- | ----------- |
+| date, time, datetime |      1      |
+| datetime2            |      0      |
+| other type           |      0      |
+
+$ SET DATEFORMAT
+- SET DATEFORMAT {format}
+- Sets the order of the date parts for interpreting strings as dates.
+- Valid formats: mdy, dmy, ydm, myd, dym
+
+$ SET LANGUAGE
+- SET LANGUAGE {language}
+- Set the language for the session
+- Implicitly sets the setting of SET DATEFORMAT
+- Valid languages: English, Italian, Spanish
+
 
 
 */
@@ -247,4 +305,160 @@ SELECT
 FROM voters;
 
 
--- 7. 
+-- 7. Arithmetic operations with dates
+DECLARE @date1 datetime = '2018-12-01';
+DECLARE @date2 datetime = '2030-03-03';
+
+SELECT
+    @date1 - @date2 AS sub,
+    @date1 + @date2 AS addition,
+    DATEDIFF(YEAR, @date2 - @date1, @date1 + @date2);
+
+
+-- 8. Modifying the value of a date
+SELECT 
+	first_name,
+	birthdate,
+    -- Add 18 years to the birthdate
+	DATEADD(YEAR, 18, birthdate) AS eighteenth_birthday
+  FROM voters;
+
+SELECT 
+	first_name,
+	first_vote_date,
+    -- Add 5 days to the first voting date
+	DATEADD(DAY, 5, first_vote_date) AS processing_vote_date
+  FROM voters;
+
+  SELECT
+	-- Subtract 476 days from the current date
+	DATEADD(DAY, -476, GETDATE()) AS date_476days_ago;
+
+
+-- 9. Calculating the difference between dates
+SELECT
+	first_name,
+	birthdate,
+	first_vote_date,
+    -- Select the diff between the 18th birthday and first vote
+	DATEDIFF(YEAR, DATEADD(YEAR, 18, birthdate), first_vote_date) AS adult_years_until_vote
+FROM voters;
+
+SELECT 
+	-- Get the difference in weeks from 2019-01-01 until now
+	DATEDIFF(WEEK, '2019-01-01', GETDATE()) AS weeks_passed;
+
+
+-- 10. Changing the date format
+DECLARE @date1 NVARCHAR(20) = '2018-30-12';
+
+-- Set the date format and check if the variable is a date
+SET DATEFORMAT ydm;
+SELECT ISDATE(@date1) AS result;
+
+DECLARE @date1 NVARCHAR(20) = '15/2019/4';
+
+-- Set the date format and check if the variable is a date
+SET DATEFORMAT dym;
+SELECT ISDATE(@date1) AS result;
+
+DECLARE @date1 NVARCHAR(20) = '10.13.2019';
+
+-- Set the date format and check if the variable is a date
+SET DATEFORMAT mdy;
+SELECT ISDATE(@date1) AS result;
+
+DECLARE @date1 NVARCHAR(20) = '18.4.2019';
+
+-- Set the date format and check if the variable is a date
+SET DATEFORMAT dmy;
+SELECT ISDATE(@date1) AS result;
+
+
+-- 11. Changing the default language
+DECLARE @date1 NVARCHAR(20) = '30.03.2019';
+
+-- Set the correct language
+SET LANGUAGE 'Dutch';
+SELECT
+	@date1 AS initial_date,
+    -- Check that the date is valid
+	ISDATE(@date1) AS is_valid,
+    -- Select the name of the month
+	DATENAME(MONTH, @date1) AS month_name;
+
+DECLARE @date1 NVARCHAR(20) = '32/12/13';
+
+-- Set the correct language
+SET LANGUAGE Croatian;
+SELECT
+	@date1 AS initial_date,
+    -- Check that the date is valid
+	ISDATE(@date1) AS is_valid,
+    -- Select the name of the month
+	DATENAME(MONTH, @date1) AS month_name,
+	-- Extract the year from the date
+	YEAR(@date1) AS year_name;
+
+DECLARE @date1 NVARCHAR(20) = '12/18/55';
+
+-- Set the correct language
+SET LANGUAGE English;
+SELECT
+	@date1 AS initial_date,
+    -- Check that the date is valid
+	ISDATE(@date1) AS is_valid,
+    -- Select the week day name
+	DATENAME(WEEKDAY, @date1) AS week_day,
+	-- Extract the year from the date
+	YEAR(@date1) AS year_name;
+
+
+-- 12. Correctly applying different date functions
+SELECT
+	first_name,
+    last_name,
+    birthdate,
+	first_vote_date,
+	-- Find out on which day of the week each participant voted 
+	DATENAME(WEEKDAY, first_vote_date) AS first_vote_weekday
+FROM voters;
+
+SELECT
+	first_name,
+    last_name,
+    birthdate,
+	first_vote_date,
+	-- Find out on which day of the week each participant voted 
+	DATENAME(weekday, first_vote_date) AS first_vote_weekday,
+	-- Find out the year of the first vote
+	YEAR(first_vote_date) AS first_vote_year	
+FROM voters;
+
+SELECT
+	first_name,
+    last_name,
+    birthdate,
+	first_vote_date,
+	-- Find out on which day of the week each participant voted 
+	DATENAME(weekday, first_vote_date) AS first_vote_weekday,
+	-- Find out the year of the first vote
+	YEAR(first_vote_date) AS first_vote_year,
+	-- Find out the age of each participant when they joined the contest
+	DATEDIFF(YEAR, birthdate, first_vote_date) AS age_at_first_vote	
+FROM voters;
+
+SELECT
+	first_name,
+    last_name,
+    birthdate,
+	first_vote_date,
+	-- Find out on which day of the week each participant voted 
+	DATENAME(weekday, first_vote_date) AS first_vote_weekday,
+	-- Find out the year of the first vote
+	YEAR(first_vote_date) AS first_vote_year,
+	-- Discover the participants' age when they joined the contest
+	DATEDIFF(YEAR, birthdate, first_vote_date) AS age_at_first_vote,	
+	-- Calculate the current age of each voter
+	DATEDIFF(YEAR, birthdate, GETDATE()) AS current_age
+FROM voters;
