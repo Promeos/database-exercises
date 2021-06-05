@@ -5,8 +5,6 @@ MySQL, SQL Server, and PostgreSQL
 
 ## Advanced Queries
 
-## Data Types
-
 ## Database Design
 
 ## Error Handling
