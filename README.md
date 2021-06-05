@@ -1,14 +1,18 @@
-# Databases and MySQL
+# SQL Exercises
+MySQL, SQL Server, and PostgreSQL
 
-## Databases
-These databases can be downloaded [here](https://dev.mysql.com/doc/index-other.html).
-* `employees`
-> 
-* `sakila`
->
-* `world`
->
-* `albums_db`
-> 
-* `chipotle`
-> 
+## Basic Queries
+
+## Advanced Queries
+
+## Data Types
+
+## Database Design
+
+## Error Handling
+
+## Writing Functions and Stored Procedures
+
+## Building and Optimizing Triggers in SQL Server
+
+## Improving Query Performance in SQL Server
