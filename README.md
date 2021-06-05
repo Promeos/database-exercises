@@ -1,5 +1,4 @@
-# SQL Exercises
-MySQL, SQL Server, and PostgreSQL
+![header](./visuals/sql-header.png)
 
 ## Basic Queries
 
