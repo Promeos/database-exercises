@@ -10,6 +10,7 @@ is a valid date or not.
 -------------------------------- NOTES -------------------------------------------
 
 FUNCTIONS THAT RETURN SYSTEM DATE AND TIME
+
 - Storing data inside a database barely has any value without attaching a date or time
   dimension to it
 
@@ -26,7 +27,7 @@ $ Time zones in SQL Server
     - UTC is the primary time standard by which all time zone are based.
 
 $ Functions that return the date and time of the operating system
-* High Precision Functions
+* High Precision Datetime Functions
     - SYSDATETIME()
         - Returns the computers date and time without time zone information.
     - SYSUTCDATETIME()
@@ -39,7 +40,7 @@ SELECT
     SYSDATETIMEOFFSET() AS [SYSDATETIMEOFFSET],
     SYSUTCDATETIME() AS [SYSUTCDATETIME];
 
-* Low Precision Functions
+* Low Precision Datetime Functions
     - GETDATE()
     - GETUTCDATE()
     - CURRENT_TIMESTAMP
@@ -79,18 +80,71 @@ SELECT
 
 FUNCTIONS RETURNING DATE AND TIME PARTS
 
+If you only need to work with the year, month or day from a certain date, there are functions
+you can use.
+
 $ YEAR(date)
     - Returns the year from the specified date.
 
 SELECT
     YEAR(SYSDATETIME()) AS YearPart;
 
+
 $ MONTH(date)
-    - Returns the month from the specified date.
+- Returns the month from the specified date.
+- The value returned is an integer.
 
 SELECT
     MONTH(SYSDATETIME()) AS MonthPart;
 
+
+$ DAY(date)
+- Returns the day from the specified date.
+
+SELECT
+    DAY(SYSDATETIME()) AS DayPart;
+
+
+$ DATENAME(datepart, date)
+- Returns a character string representing the specified data part of the given date.
+
+| datepart  | abbreviations |
+| --------- | ------------- |
+| year      | yy, yyyy      |
+| month     | mm, m         |
+| dayofyear | dy, y         |
+| week      | wk, ww        |
+| weekday   | dw, w         |
+
+DECLARE @date datetime = '2019-03-24'
+
+SELECT
+    YEAR(@date) AS year,
+    DATENAME(YEAR, @date) AS year_name,
+    MONTH(@date) AS month,
+    DATENAME(MONTH, @date) AS month_name,
+    DAY(@date) AS day,
+    DATENAME(DAY, @date) AS day_name,
+    DATENAME(WEEKDAY, @date) AS weekday;
+
+- The Month and Weekday names differ between the DATEPART() and DATENAME() functions.
+
+$ DATEFROMPARTS(year, month, day)
+- Receives 3 parameters: year, month, and day values.
+- Generates a date.
+- Can input string values of year, month, and day and SQL Server will Implicitly convert then to numbers.
+
+SELECT
+    DATEFROMPARTS(2019, 3, 5)  AS new_date;
+
+2019-03-05
+
+
+PERFORMING ARITHMETIC OPERATIONS ON DATES
+
+$ Types of operations with dates
+- Opeartions using arithmetic operators (+,-) on two dates or between a date and an number (interval).
+- Modify the value of a date - DATEADD()
 */
 ------------------------------ EXERCISES -----------------------------------------
 
@@ -119,4 +173,75 @@ SELECT
 	CAST(CURRENT_TIMESTAMP AS time) AS LowPrecision;
 
 
--- 3. 
+-- 3. Extracting parts from a date
+SELECT 
+	first_name,
+	last_name,
+	-- Extract the year of the first vote
+	YEAR(first_vote_date)  AS first_vote_year,
+    -- Extract the month of the first vote
+	MONTH(first_vote_date) AS first_vote_month,
+    -- Extract the day of the first vote
+	DAY(first_vote_date)   AS first_vote_day
+FROM voters
+-- The year of the first vote should be greater than 2015
+WHERE YEAR(first_vote_date) > 2015
+-- The day should not be the first day of the month
+  AND DAY(first_vote_date) <> 1;
+
+
+-- 4. Generating descriptive date parts
+SELECT 
+	first_name,
+	last_name,
+	first_vote_date,
+    -- Select the name of the month of the first vote
+	DATENAME(MONTH, first_vote_date) AS first_vote_month
+FROM voters;
+
+SELECT 
+	first_name,
+	last_name,
+	first_vote_date,
+    -- Select the number of the day within the year
+	DATENAME(DAYOFYEAR, first_vote_date) AS first_vote_dayofyear
+FROM voters;
+
+SELECT 
+	first_name,
+	last_name,
+	first_vote_date,
+    -- Select day of the week from the first vote date
+	DATENAME(WEEKDAY, first_vote_date) AS first_vote_dayofweek
+FROM voters;
+
+
+-- 5. Presenting parts of a date
+SELECT 
+	first_name,
+	last_name,
+   	-- Extract the month number of the first vote
+	DATEPART(MONTH,first_vote_date) AS first_vote_month1,
+	-- Extract the month name of the first vote
+    DATENAME(MONTH,first_vote_date) AS first_vote_month2,
+	-- Extract the weekday number of the first vote
+	DATEPART(WEEKDAY,first_vote_date) AS first_vote_weekday1,
+    -- Extract the weekday name of the first vote
+	DATENAME(WEEKDAY,first_vote_date) AS first_vote_weekday2
+FROM voters;
+
+
+-- 6. Creating a date from parts
+SELECT 
+	first_name,
+	last_name,
+    -- Select the year of the first vote
+   	YEAR(first_vote_date) AS first_vote_year, 
+    -- Select the month of the first vote
+	MONTH(first_vote_date) AS first_vote_month,
+    -- Create a date as the start of the month of the first vote
+	DATEFROMPARTS(YEAR(first_vote_date), MONTH(first_vote_date), 1) AS first_vote_starting_month
+FROM voters;
+
+
+-- 7. 
