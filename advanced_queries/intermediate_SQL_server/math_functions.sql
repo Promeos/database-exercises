@@ -69,7 +69,7 @@ GROUP BY MixDesc;
 -- 3. Which date function should you use?
 -- Suppose you want to calculate the number of years between two different dates, DateOne and DateTwo.
 -- Which SQL statement would you use to perform that calculation?
-DATEDIFF(YYYY, Dateone, Datetwo)
+-- 
 
 
 -- 4. Counting the number of days between dates

@@ -1,5 +1,3 @@
-
-
 -- 1. Find all the employees with the same hire date as employee 101010 using a sub-query.
 select *
 from employees
