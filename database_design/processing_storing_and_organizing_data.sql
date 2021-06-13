@@ -124,11 +124,13 @@ Data marts
 $ Data Lakes
 • Technically, traditional databases and warehouses can store unstructured data.
   The caveat being it's NOT cost-effective.
+• Uses object storage vs the traditional file or block storage.  
 • Store all types of data at a lower cost
     - Raw data, operational data, IoT device logs, real-time, relational and non-relational
 • Retains all data and can take up petabytes.
 • Schema-on-read as opposed to schema-on-write.
     - Traditional databases are classified as schema-on-write because the schema is PREDEFINED.
+• Unstructured data is the most scalable
 • Data needs to be catalog, otherwise it becomes a data swamp.
 • Run Big data analytics using services such as Apache Spark and Hadoop
     - Useful for deep learning and data discovery because activites require a lot of data.
@@ -177,7 +179,13 @@ There are 3 levels to a data model: Conceptual, Logical, Physical
     - Tools: Partitions, CPU's, indexes, backup systems and tablespaces.
 
 
+$ Beyond relational modeling
 
+Dimensional Modeling
+• Adaptation of the relational model for data warehouse design.
+• Optimized for OLAP queries: aggregate data, not updating (OLAP)
+• Built using the star schema.
+• Easy to interpret and extend schema.
 
 
 */
@@ -223,4 +231,57 @@ Place the steps in the most appropriate order.
 When should you choose a data warehouse over a data lake?
 
 To create accessible and isolated data repositories for other analysts
+*/
+
+
+-- 4. Deciding fact and dimension tables
+-- Create a route dimension table
+CREATE TABLE route (
+	route_id INTEGER PRIMARY KEY,
+    park_name VARCHAR(160) NOT NULL,
+    city_name VARCHAR(160) NOT NULL,
+    distance_km FLOAT NOT NULL,
+    route_name VARCHAR(160) NOT NULL
+)
+-- Create a week dimension table
+CREATE TABLE week(
+	week_id INTEGER PRIMARY KEY,
+    week INTEGER NOT NULL,
+    month VARCHAR(160) NOT NULL,
+    year INTEGER NOT NULL
+);
+
+
+-- 5. Querying the dimensional model
+SELECT 
+	-- Get the total duration of all runs
+	SUM(duration_mins)
+FROM 
+	runs_fact;
+
+SELECT 
+	-- Get the total duration of all runs
+	SUM(duration_mins)
+FROM 
+	runs_fact
+-- Get all the week_id's that are from July, 2019
+INNER JOIN week_dim ON week_dim.week_id = runs_fact.week_id
+WHERE month = 'July' and year = '2019';
+
+
+-- 7. Name that data type!
+/*
+Unstructured:
+- Images in your photo library
+- Zip file of all text messages ever received
+- To-do notes in a text editor
+
+Semi-Structured:
+- JSON object of tweets outputted in real-time by the Twitter API
+- CSVs of open data downloaded from your local government websites
+- html
+
+Structured:
+- A relational database with latest withdrawals and deposits made by clients.
+
 */
