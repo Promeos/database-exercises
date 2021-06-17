@@ -123,9 +123,6 @@ CREATE MATERIALIZED VIEW my_mv AS SELECT * FROM exisiting_table;
 REFRESH MATERIALIZED VIEW my_mv;
 You can use Cron Jobs to schedule jobs.
 
-
-
-
 */
 ------------------------------ EXERCISES -----------------------------------------
 
