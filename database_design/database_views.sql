@@ -97,6 +97,32 @@ $ Altering a view
 
 MATERIALIZED VIEWS
 
+$ Two types of views
+    Views
+    - Non-materialized views
+    - Virtual
+
+    Materialized Views
+    - Physically materialized
+
+$ Materialized views
+- Stores the query results, not the query.
+- Querying a materialized view means accessing the stored query resutls.
+- Refreshed or rematerialized when prompted or scheduled.
+
+$ When to use materialized views
+- Long running queries
+- Underlying query results don't change often
+    - The data is only up to date the last time the view was refreshed.
+- Data warehouses because OLAP is not write-intensive
+    - Save on computational cost of frequent queries
+
+$ Implementing materialized views
+CREATE MATERIALIZED VIEW my_mv AS SELECT * FROM exisiting_table;
+
+REFRESH MATERIALIZED VIEW my_mv;
+You can use Cron Jobs to schedule jobs.
+
 
 
 
@@ -154,3 +180,22 @@ ON reviews.reviewid = labels.reviewid;
 SELECT * FROM artist_title;
 
 
+-- 6. Creating and refreshing a materialized view
+-- Create a materialized view called genre_count 
+CREATE MATERIALIZED VIEW genre_count AS
+SELECT genre, COUNT(*) 
+FROM genres
+GROUP BY genre;
+
+INSERT INTO genres
+VALUES (50000, 'classical');
+
+-- Refresh genre_count
+REFRESH MATERIALIZED VIEW genre_count;
+
+SELECT * FROM genre_count;
+
+
+-- 7. Managing materialized views
+-- Why do companies use pipeline schedulers, such as Airflow and Luigi, to manage materialized views?
+-- To refresh materialized views with consideration to dependencies between views.
