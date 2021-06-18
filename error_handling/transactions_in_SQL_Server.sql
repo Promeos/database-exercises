@@ -125,6 +125,69 @@ $ Savepoints
     [ ; ]
 
 
+XACT_ABORT & XACT_STATE
+
+$ XACT_ABORT
+    Specifies whether the current transaction will be automatically rolled back when an error occurs.
+
+    SET XACT_ABORT { ON | OFF }
+    SET XACT_ABORT OFF
+        - Default setting
+        - If there is an error: There may be open transactions.
+
+    SET XACT_ABORT ON
+        - If there is an error: Rollbacks the transaction and aborts the execution.
+    
+
+$ XACT_ABORT examples
+    SET XACT_ABORT ON;
+
+    BEGIN TRAN;
+        INSERT INTO customers VALUES ('Mark', 'Davis', 'markdavis@mail.com', '555909090');
+        INSERT INTO customers VALUES ('Dylan', 'Smith', 'dylansmith@mail.com', '55588899');
+    COMMIT TRAN;
+
+$ XACT_ABORT WITH RAISERROR
+
+    SET XACT_ABORT ON;
+
+    BEGIN TRAN;
+        INSERT INTO customers VALUES ('Mark', 'Davis', 'markdavis@mail.com', '555909090');
+        RAISERROR('Raising an error!', 16, 1);
+        INSERT INTO customers VALUES ('Zack', 'Roberts', zackroberts@mail.com', '555919191');
+    COMMIT TRAN;
+    
+    - RAISERROR does not stop the transaction from commiting the inserts even though there is an error.
+
+
+$ XACT_ABORT with THROW
+
+    SET XACT_ABORT ON;
+
+    BEGIN TRAN;
+        INSERT INTO customers VALUES ('Mark', 'Davis', 'markdavis@mail.com', '555909090');
+        THROW 55000, 'Raising an error!', 1;
+        INSERT INTO customers VALUES ('Zack', 'Roberts', 'zackroberts@gmail.com', '555919191')
+    COMMIT TRAN;
+
+    - THROW ROLLS BACK both transactions because an error is raised.
+
+$ XACT_STATE
+
+    XACT_STATE()
+
+        0 -> no open transaction
+        1 -> open and committable transaction
+        -1 -> open and uncommittable transaction
+            - can't commit
+            - can't rollback to a savepoint
+            - can rollback the full transaction
+            - can't make any changes but can read data
+
+        
+    
+
+
 
 */
 ------------------------------ EXERCISES -----------------------------------------
@@ -242,3 +305,37 @@ BEGIN TRAN;
 	INSERT INTO customers VALUES ('Jeremy', 'Johnsson', 'jeremyjohnsson@mail.com', '555929292');
 -- Commit the transaction
 COMMIT TRAN;
+
+
+-- 8. XACT_ABORT and THROW
+-- Use the appropriate setting
+SET XACT_ABORT ON;
+-- Begin the transaction
+BEGIN TRAN; 
+	UPDATE accounts set current_balance = current_balance - current_balance * 0.01 / 100
+		WHERE current_balance > 5000000;
+	IF @@ROWCOUNT <= 10	
+    	-- Throw the error
+		THROW 55000, 'Not enough wealthy customers!', 1;
+	ELSE		
+    	-- Commit the transaction
+		COMMIT TRAN; 
+
+
+-- 9. Doomed transactions
+-- Use the appropriate setting
+SET XACT_ABORT OFF;
+BEGIN TRY
+	BEGIN TRAN;
+		INSERT INTO customers VALUES ('Mark', 'Davis', 'markdavis@mail.com', '555909090');
+		INSERT INTO customers VALUES ('Dylan', 'Smith', 'dylansmith@mail.com', '555888999');
+	COMMIT TRAN;
+END TRY
+BEGIN CATCH
+	-- Check if there is an open transaction
+	IF XACT_STATE() <> 0
+    	-- Rollback the transaction
+		ROLLBACK TRAN;
+    -- Select the message of the error
+    SELECT ERROR_MESSAGE() AS Error_message;
+END CATCH
