@@ -64,3 +64,61 @@ FROM CapitalBikeShare
 -- Only include Saturday
 WHERE DATENAME(WEEKDAY, StartDate) = 'Saturday' 
 GROUP BY CONVERT(DATE, StartDate);
+
+
+-- 5. DECLARE & CAST
+-- Create @ShiftStartTime
+DECLARE @ShiftStartTime AS time = '08:00 AM'
+
+-- Create @StartDate
+DECLARE @StartDate AS date
+
+-- Set StartDate to the first StartDate from CapitalBikeShare
+SET 
+	@StartDate = (
+    	SELECT TOP 1 StartDate
+    	FROM CapitalBikeShare 
+    	ORDER BY StartDate ASC
+		)
+
+-- Create ShiftStartDateTime
+DECLARE @ShiftStartDateTime AS datetime
+
+-- Cast StartDate and ShiftStartTime to datetime data types
+SET @ShiftStartDateTime = CAST(@StartDate AS datetime) + CAST(@ShiftStartTime AS datetime) 
+
+SELECT @ShiftStartDateTime
+
+
+-- 6. DECLARE a TABLE
+-- Declare @Shifts as a TABLE
+DECLARE @Shifts TABLE(
+    -- Create StartDateTime column
+	StartDateTime datetime,
+    -- Create EndDateTime column
+	EndDateTime datetime)
+-- Populate @Shifts
+INSERT INTO @Shifts (StartDateTime, EndDateTime)
+	SELECT '3/1/2018 8:00 AM', '3/1/2018 4:00 PM'
+SELECT * 
+FROM @Shifts
+
+
+-- 7. INSERT INTO @TABLE
+-- Declare @RideDates
+DECLARE @RideDates TABLE(
+    -- Define RideStart column
+	RideStart date, 
+    -- Define RideEnd column
+    RideEnd date)
+-- Populate @RideDates
+INSERT INTO @RideDates(RideStart, RideEnd)
+-- Select the unique date values of StartDate and EndDate
+SELECT DISTINCT
+    -- Cast StartDate as date
+	CAST(StartDate as date),
+    -- Cast EndDate as date
+	CAST(EndDate as date) 
+FROM CapitalBikeShare 
+SELECT * 
+FROM @RideDates
