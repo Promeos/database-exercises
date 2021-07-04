@@ -122,3 +122,8 @@ SELECT DISTINCT
 FROM CapitalBikeShare 
 SELECT * 
 FROM @RideDates
+
+
+-- 8. First day of the month
+-- Find the first day of the current month
+SELECT DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)
