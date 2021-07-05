@@ -174,11 +174,62 @@ MAINTAINING USER DEFINED FUNCTIONS
 
 $ ALTER Function
 
-    ALTER FUNCTION Sum
+    ALTER FUNCTION SumLocationStats (@EndDate as datetime = '1/01/2017')
+    RETURNS TABLE RETURN
+    SELECT
+        PULocationID AS PickupLocation
+        COUNT(ID) AS RideCount
+        SUM(TripDistance) AS TotalTripDistance
+    FROM YellowTripData
+    WHERE CAST(DropOffDate as Date) = @EndDate
+    GROUP BY PULocationID;
 
 
 $ CREATE OR ALTER
 
+    CREATE OR ALTER FUNCTION SumLocationStats (
+        @EndDate AS datetime = '1/01/2017'
+        RETURNS TABLE AS RETURN
+        SELECT
+            PULocationID AS PickupLocation,
+            COUNT(ID) AS RideCount,
+            SUM(TripDistance) AS TotalTripDistance
+        FROM YellowTripData
+        WHERE CAST(DropOffDate AS DATE) = @EndDate
+        GROUP BY PULocationID;
+    )
+
+    - You cannot use ALTER to change a Inline Table Defined Function to a Multi statement Table Defined Function.
+
+    - To delete a function use DROP FUNCTION
+    - DROP will execute as long as the User has permission to do so.
+        DROP FUNCTION dbo.CountTripAvgFareDay
+
+
+$ Determinism improves performance
+
+    A function is deterministic when it returns the same result given:
+        - The same input parameters
+        - The same database state
+
+    * A function is NON-deterministic if it could return a different value, given the same input parameters and
+      database state.
+
+    
+$ Schemabinding
+
+    - Specifies the schema is bound to the database objects that it references.
+    - Prevents changes to the schema if schema cound objects are referencing it.
+
+    CREATE OR ALTER FUNCTION dbo.GetRideHrsOneDay (@DateParm date)
+    RETURNS numeric WITH SCHEMABINDING
+    AS
+    BEGIN
+    RETURN
+    (SELECT SUM(DATEDIFF(SECOND, PickupDate, DropOffDate))/3600
+    FROM dbo.YellowTripData
+    WHERE CONVERT(DATE, PickupDate) = @DateParm)
+    END;
 
 */
 ------------------------------ EXERCISES -----------------------------------------
@@ -316,3 +367,20 @@ ORDER BY RideCount DESC
 -- Select all the records from @StationStats
 SELECT * 
 FROM @StationStats
+
+
+-- 9. CREATE OR ALTER
+-- Update SumStationStats
+CREATE OR ALTER FUNCTION dbo.SumStationStats(@EndDate AS date)
+-- Enable SCHEMABINDING
+RETURNS TABLE WITH SCHEMABINDING
+AS
+RETURN
+SELECT
+	StartStation,
+    COUNT(ID) AS RideCount,
+    SUM(DURATION) AS TotalDuration
+FROM dbo.CapitalBikeShare
+-- Cast EndDate as date and compare to @EndDate
+WHERE CAST(EndDate AS Date) = @EndDate
+GROUP BY StartStation;
